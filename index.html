@@ -6,913 +6,741 @@
 <title>Legal Heirs Calculator | وراثت کیلکولیٹر</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=DM+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0f0d;
-  --surface: #111a15;
-  --surface2: #162019;
-  --gold: #c9a84c;
-  --gold-light: #e8c97a;
-  --gold-dim: rgba(201,168,76,0.15);
-  --green: #1a6b3c;
-  --green-light: #22c55e;
-  --green-pale: rgba(34,197,94,0.1);
-  --text: #e8e4d4;
-  --text-dim: rgba(232,228,212,0.55);
-  --border: rgba(201,168,76,0.18);
-  --father-grad: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
-  --mother-grad: linear-gradient(135deg, #880e4f 0%, #c2185b 100%);
-  --son-grad: linear-gradient(135deg, #1a6b3c 0%, #2e7d52 100%);
-  --daughter-grad: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+:root{
+  --bg:#0a0f0d;--surface:#111a15;--surface2:#162019;
+  --gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:rgba(201,168,76,.15);
+  --green:#1a6b3c;--green-light:#22c55e;
+  --text:#e8e4d4;--text-dim:rgba(232,228,212,.55);--border:rgba(201,168,76,.18);
+  --father-g:linear-gradient(135deg,#0d47a1,#1565c0);
+  --grandfather-g:linear-gradient(135deg,#006064,#00838f);
+  --mother-g:linear-gradient(135deg,#880e4f,#c2185b);
+  --grandmother-g:linear-gradient(135deg,#bf360c,#e64a19);
+  --son-g:linear-gradient(135deg,#1a6b3c,#2e7d52);
+  --daughter-g:linear-gradient(135deg,#7b1fa2,#9c27b0);
+  --wife1-g:linear-gradient(135deg,#b5471b,#e8622a);
+  --wife2-g:linear-gradient(135deg,#0d5c8a,#1e88e5);
+  --wife3-g:linear-gradient(135deg,#3d7c26,#7cb342);
+  --wife4-g:linear-gradient(135deg,#6a1b9a,#ab47bc);
+  --grandson-g:linear-gradient(135deg,#00695c,#00897b);
+  --granddaughter-g:linear-gradient(135deg,#4527a0,#7e57c2);
+  --grandsonD-g:linear-gradient(135deg,#4a148c,#7b1fa2);
+  --granddaughterD-g:linear-gradient(135deg,#1a237e,#3949ab);
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(45deg,rgba(201,168,76,.03) 0 1px,transparent 1px 40px),repeating-linear-gradient(-45deg,rgba(201,168,76,.03) 0 1px,transparent 1px 40px);pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:28px 18px 60px}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.header{text-align:center;padding:36px 30px 28px;background:var(--surface);border:1px solid var(--border);border-radius:20px;margin-bottom:22px;position:relative;overflow:hidden}
+.header::before{content:'⬡';position:absolute;font-size:220px;color:rgba(201,168,76,.04);top:-50px;right:-40px;line-height:1;pointer-events:none}
+.hbadge{display:inline-block;background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:.72rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:30px;margin-bottom:14px}
+.header h1{font-family:'Amiri',serif;font-size:clamp(1.8rem,5vw,2.7rem);color:var(--gold);line-height:1.2;margin-bottom:6px}
+.h-urdu{font-family:'Amiri',serif;font-size:1.2rem;color:var(--text-dim);direction:rtl}
+.h-sub{font-size:.82rem;color:var(--text-dim);margin-top:8px}
+.h-creator{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.cr-label{font-size:.7rem;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase}
+.cr-name{font-family:'Amiri',serif;font-size:1.1rem;color:var(--gold);font-weight:700;letter-spacing:.5px}
+.cr-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.4;flex-shrink:0}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:18px}
+.card-title{font-size:.78rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-label{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:8px 0 6px;border-bottom:1px solid rgba(201,168,76,.06);margin-bottom:2px}
 
-/* Geometric Islamic background pattern */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    repeating-linear-gradient(45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 40px),
-    repeating-linear-gradient(-45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 40px);
-  pointer-events: none;
-  z-index: 0;
-}
+/* AREA */
+.area-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.inp-wrap{display:flex;flex-direction:column;gap:6px}
+.inp-wrap label{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.inp-wrap input{background:var(--surface2);border:1.5px solid rgba(201,168,76,.2);border-radius:10px;padding:13px 10px;color:var(--text);font-size:1.35rem;font-weight:700;font-family:'DM Sans',sans-serif;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.inp-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.inp-unit{text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:500}
 
-.wrapper {
-  position: relative;
-  z-index: 1;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 28px 18px 60px;
-}
+/* HEIR ROW */
+.heir-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(201,168,76,.07)}
+.heir-row:last-child{border-bottom:none;padding-bottom:0}
+.heir-row:first-child{padding-top:0}
+.heir-row.disabled-row{opacity:.3;pointer-events:none}
+.h-info{display:flex;align-items:center;gap:12px}
+.h-avatar{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.h-avatar.father{background:rgba(13,71,161,.3);border:1px solid rgba(21,101,192,.4)}
+.h-avatar.grandfather{background:rgba(0,96,100,.3);border:1px solid rgba(0,131,143,.4)}
+.h-avatar.mother{background:rgba(136,14,79,.3);border:1px solid rgba(194,24,91,.4)}
+.h-avatar.grandmother{background:rgba(191,54,12,.3);border:1px solid rgba(230,74,25,.4)}
+.h-name{font-size:.93rem;font-weight:700;color:var(--text)}
+.h-sub{font-size:.73rem;color:var(--text-dim);margin-top:1px;font-family:'Amiri',serif}
+.h-note{font-size:.67rem;color:var(--gold);margin-top:2px;font-style:italic}
 
-/* ─── HEADER ─── */
-.header {
-  text-align: center;
-  padding: 40px 30px 36px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  margin-bottom: 22px;
-  position: relative;
-  overflow: hidden;
-}
+/* TOGGLES */
+.toggle-wrap{position:relative;width:50px;height:26px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.ttrack{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:26px;cursor:pointer;transition:background .3s;border:1px solid rgba(255,255,255,.08)}
+.ttrack::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:2px;background:rgba(255,255,255,.5);border-radius:50%;transition:transform .3s,background .3s}
+.toggle-wrap input:checked+.ttrack{background:linear-gradient(135deg,var(--green),var(--green-light));border-color:transparent}
+.toggle-wrap input:checked+.ttrack::before{transform:translateX(24px);background:#fff}
+/* red deceased toggle */
+.dtoggle-wrap{position:relative;width:50px;height:26px;flex-shrink:0}
+.dtoggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.dtoggle-wrap input:checked+.ttrack{background:linear-gradient(135deg,#b71c1c,#e53935);border-color:transparent}
+.dtoggle-wrap input:checked+.ttrack::before{transform:translateX(24px);background:#fff}
 
-.header::before {
-  content: '⬡';
-  position: absolute;
-  font-size: 220px;
-  color: rgba(201,168,76,0.04);
-  top: -50px; right: -40px;
-  line-height: 1;
-  pointer-events: none;
-}
+/* COUNTER */
+.counter{display:flex;align-items:center;gap:8px}
+.cbtn{width:32px;height:32px;border:1.5px solid;border-radius:50%;background:none;cursor:pointer;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;line-height:1}
+.cbtn.minus{border-color:rgba(239,68,68,.4);color:#f87171}
+.cbtn.plus{border-color:rgba(34,197,94,.4);color:#4ade80}
+.cbtn:hover{transform:scale(1.12);background:rgba(255,255,255,.05)}
+.cbtn:active{transform:scale(.95)}
+.cval{font-size:1.3rem;font-weight:900;min-width:28px;text-align:center;color:var(--text);font-variant-numeric:tabular-nums}
 
-.header-badge {
-  display: inline-block;
-  background: var(--gold-dim);
-  border: 1px solid rgba(201,168,76,0.3);
-  color: var(--gold);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 30px;
-  margin-bottom: 16px;
-}
+/* WIVES */
+.wives-container{margin-top:12px}
+.wife-block{border-radius:14px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden;transition:opacity .3s}
+.wife-block:last-child{margin-bottom:0}
+.wife-block.w1{background:rgba(232,98,42,.08);border:1.5px solid rgba(232,98,42,.25)}
+.wife-block.w2{background:rgba(30,136,229,.08);border:1.5px solid rgba(30,136,229,.25)}
+.wife-block.w3{background:rgba(124,179,66,.08);border:1.5px solid rgba(124,179,66,.25)}
+.wife-block.w4{background:rgba(171,71,188,.08);border:1.5px solid rgba(171,71,188,.25)}
+.wife-block.wife-dead{opacity:.55;border-style:dashed}
+.wife-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.wife-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.wife-block.w1 .wife-icon{background:rgba(232,98,42,.2);border:1px solid rgba(232,98,42,.4)}
+.wife-block.w2 .wife-icon{background:rgba(30,136,229,.2);border:1px solid rgba(30,136,229,.4)}
+.wife-block.w3 .wife-icon{background:rgba(124,179,66,.2);border:1px solid rgba(124,179,66,.4)}
+.wife-block.w4 .wife-icon{background:rgba(171,71,188,.2);border:1px solid rgba(171,71,188,.4)}
+.wife-title{font-weight:800;font-size:.97rem}
+.wife-block.w1 .wife-title{color:#ff8a65}
+.wife-block.w2 .wife-title{color:#64b5f6}
+.wife-block.w3 .wife-title{color:#aed581}
+.wife-block.w4 .wife-title{color:#ce93d8}
+.wife-title-urdu{font-family:'Amiri',serif;font-size:.82rem;opacity:.65;margin-top:1px}
+.wife-deceased-badge{display:inline-block;background:rgba(183,28,28,.25);border:1px solid rgba(229,57,53,.4);color:#ef9a9a;font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-left:6px}
+.wife-deceased-note{background:rgba(183,28,28,.1);border:1px solid rgba(229,57,53,.15);border-radius:8px;padding:9px 12px;font-size:.75rem;color:#ef9a9a;margin-bottom:8px;text-align:center}
+.wife-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.wife-row:last-child{border-bottom:none;padding-bottom:0}
+.wife-row-label{font-size:.87rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
 
-.header h1 {
-  font-family: 'Amiri', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  color: var(--gold);
-  letter-spacing: 1px;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
+/* SONS LIST */
+.sons-list{margin-top:8px}
+.son-item{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 14px;margin-bottom:8px;border:1px solid rgba(255,255,255,.06)}
+.son-item:last-child{margin-bottom:0}
+.son-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.son-label{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;flex-wrap:wrap}
+.deceased-badge{display:inline-block;background:rgba(183,28,28,.25);border:1px solid rgba(229,57,53,.4);color:#ef9a9a;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:20px}
+.deceased-section{margin-top:10px;padding:12px;background:rgba(183,28,28,.1);border-radius:8px;border:1px solid rgba(229,57,53,.2)}
+.dec-title{font-size:.68rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#ef9a9a;margin-bottom:10px}
+.dec-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(229,57,53,.1)}
+.dec-row:last-child{border-bottom:none;padding-bottom:0}
+.dec-row-label{font-size:.82rem;color:var(--text-dim);display:flex;align-items:center;gap:6px}
 
-.header-urdu {
-  font-family: 'Amiri', serif;
-  font-size: 1.25rem;
-  color: var(--text-dim);
-  direction: rtl;
-}
+/* DAUGHTERS LIST */
+.daughters-list{margin-top:8px}
+.dau-item{background:rgba(255,255,255,.04);border-radius:10px;padding:11px 14px;margin-bottom:7px;border:1px solid rgba(255,255,255,.06)}
+.dau-item:last-child{margin-bottom:0}
+.dau-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.dau-label{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.88rem;flex-wrap:wrap}
 
-.header-sub {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  margin-top: 10px;
-  letter-spacing: 0.5px;
-}
+/* CALC BTN */
+.calc-btn{width:100%;padding:18px;background:linear-gradient(135deg,#c9a84c 0%,#e8c97a 50%,#c9a84c 100%);background-size:200% 100%;border:none;border-radius:14px;color:#0a0f0d;font-size:1.05rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-bottom:22px;font-family:'DM Sans',sans-serif;box-shadow:0 8px 30px rgba(201,168,76,.25)}
+.calc-btn:hover{background-position:right center;transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
+.calc-btn:active{transform:translateY(0)}
 
-/* ─── CARDS ─── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 26px;
-  margin-bottom: 18px;
-}
+/* RESULTS */
+#results{animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardPop{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
+.total-band{background:var(--gold-dim);border:1px solid rgba(201,168,76,.25);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.t-label{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.t-value{font-size:1.25rem;font-weight:900;color:var(--gold-light);letter-spacing:3px;font-variant-numeric:tabular-nums}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:14px}
+.result-card{border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s;animation:cardPop .4s cubic-bezier(.34,1.56,.64,1) both}
+.result-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.result-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,.07);border-radius:50%;pointer-events:none}
+.result-card.father{background:var(--father-g)}
+.result-card.grandfather{background:var(--grandfather-g)}
+.result-card.mother{background:var(--mother-g)}
+.result-card.grandmother{background:var(--grandmother-g)}
+.result-card.son{background:var(--son-g)}
+.result-card.daughter{background:var(--daughter-g)}
+.result-card.wife1,.result-card.wife{background:var(--wife1-g)}
+.result-card.wife2{background:var(--wife2-g)}
+.result-card.wife3{background:var(--wife3-g)}
+.result-card.wife4{background:var(--wife4-g)}
+.result-card.grandson{background:var(--grandson-g)}
+.result-card.granddaughter{background:var(--granddaughter-g)}
+.result-card.grandsonD{background:var(--grandsonD-g)}
+.result-card.granddaughterD{background:var(--granddaughterD-g)}
+.rc-icon{font-size:1.7rem;margin-bottom:10px}
+.rc-name{font-size:1rem;font-weight:700;line-height:1.2}
+.rc-urdu{font-family:'Amiri',serif;font-size:.85rem;opacity:.75;direction:rtl;margin-bottom:12px}
+.rc-sub{font-size:.7rem;opacity:.6;margin-bottom:4px;font-style:italic}
+.rc-frac{font-size:.75rem;font-weight:600;opacity:.7;margin-bottom:12px}
+.kms-display{background:rgba(0,0,0,.25);border-radius:10px;padding:11px 8px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
+.kms-cell{text-align:center;min-width:50px}
+.kms-num{display:block;font-size:1.45rem;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.kms-lbl{display:block;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.65;margin-top:3px}
+.kms-sep{font-size:1.2rem;font-weight:300;opacity:.4;margin:0 2px;align-self:center;padding-bottom:5px}
+.rc-precise{margin-top:8px;font-size:.7rem;opacity:.55;text-align:center}
+.error-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:16px 20px;color:#fca5a5;font-size:.9rem;text-align:center}
+.verify-bar{margin-top:16px;padding:12px 18px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;font-size:.8rem;color:#86efac;text-align:center}
+.group-title{margin:18px 0 10px;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.group-title.dec-son-color{color:#ef9a9a}
+.group-title.dec-dau-color{color:#ce93d8}
+.group-title::before,.group-title::after{content:'';flex:1;height:1px}
+.dec-son-color::before,.dec-son-color::after{background:rgba(229,57,53,.2)}
+.dec-dau-color::before,.dec-dau-color::after{background:rgba(171,71,188,.2)}
 
-.card-title {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.card-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-/* ─── AREA INPUTS ─── */
-.area-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-}
-
-.inp-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.inp-wrap label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.inp-wrap input {
-  background: var(--surface2);
-  border: 1.5px solid rgba(201,168,76,0.2);
-  border-radius: 10px;
-  padding: 13px 10px;
-  color: var(--text);
-  font-size: 1.35rem;
-  font-weight: 700;
-  font-family: 'DM Sans', sans-serif;
-  text-align: center;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  width: 100%;
-}
-
-.inp-wrap input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
-}
-
-.inp-unit {
-  text-align: center;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
-/* ─── HEIR ROWS ─── */
-.heir-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(201,168,76,0.08);
-  transition: background 0.2s;
-}
-
-.heir-row:last-child { border-bottom: none; padding-bottom: 0; }
-.heir-row:first-child { padding-top: 0; }
-
-.heir-info {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.heir-avatar {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  flex-shrink: 0;
-}
-
-.heir-avatar.father { background: rgba(13,71,161,0.3); border: 1px solid rgba(21,101,192,0.4); }
-.heir-avatar.mother { background: rgba(136,14,79,0.3); border: 1px solid rgba(194,24,91,0.4); }
-.heir-avatar.son    { background: rgba(26,107,60,0.3); border: 1px solid rgba(46,125,82,0.4); }
-.heir-avatar.daughter { background: rgba(123,31,162,0.3); border: 1px solid rgba(156,39,176,0.4); }
-
-.heir-text-name {
-  font-size: 0.97rem;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.heir-text-sub {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 2px;
-  font-family: 'Amiri', serif;
-}
-
-/* ─── TOGGLE ─── */
-.toggle-wrap { position: relative; width: 52px; height: 27px; flex-shrink: 0; }
-.toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
-.toggle-track {
-  position: absolute; inset: 0;
-  background: rgba(255,255,255,0.1);
-  border-radius: 27px;
-  cursor: pointer;
-  transition: background 0.3s;
-  border: 1px solid rgba(255,255,255,0.08);
-}
-.toggle-track::before {
-  content: '';
-  position: absolute;
-  width: 21px; height: 21px;
-  left: 3px; top: 2px;
-  background: rgba(255,255,255,0.5);
-  border-radius: 50%;
-  transition: transform 0.3s, background 0.3s;
-}
-.toggle-wrap input:checked + .toggle-track {
-  background: linear-gradient(135deg, var(--green), var(--green-light));
-  border-color: transparent;
-}
-.toggle-wrap input:checked + .toggle-track::before {
-  transform: translateX(25px);
-  background: white;
-}
-
-/* ─── COUNTER ─── */
-.counter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.cnt-btn {
-  width: 34px; height: 34px;
-  border: 1.5px solid;
-  border-radius: 50%;
-  background: none;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  line-height: 1;
-}
-
-.cnt-btn.minus { border-color: rgba(239,68,68,0.4); color: #f87171; }
-.cnt-btn.plus  { border-color: rgba(34,197,94,0.4); color: #4ade80; }
-.cnt-btn:hover { transform: scale(1.12); background: rgba(255,255,255,0.05); }
-.cnt-btn:active { transform: scale(0.95); }
-
-.cnt-val {
-  font-size: 1.4rem;
-  font-weight: 900;
-  min-width: 32px;
-  text-align: center;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ─── CALCULATE BTN ─── */
-.calc-btn {
-  width: 100%;
-  padding: 18px;
-  background: linear-gradient(135deg, #c9a84c 0%, #e8c97a 50%, #c9a84c 100%);
-  background-size: 200% 100%;
-  border: none;
-  border-radius: 14px;
-  color: #0a0f0d;
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 22px;
-  font-family: 'DM Sans', sans-serif;
-  box-shadow: 0 8px 30px rgba(201,168,76,0.25);
-}
-
-.calc-btn:hover {
-  background-position: right center;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(201,168,76,0.4);
-}
-
-.calc-btn:active { transform: translateY(0); }
-
-/* ─── RESULTS ─── */
-#results { animation: fadeUp 0.4s ease both; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.total-band {
-  background: var(--gold-dim);
-  border: 1px solid rgba(201,168,76,0.25);
-  border-radius: 12px;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.total-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.total-value {
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--gold-light);
-  letter-spacing: 3px;
-  font-variant-numeric: tabular-nums;
-}
-
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 14px;
-}
-
-.result-card {
-  border-radius: 14px;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.25s, box-shadow 0.25s;
-  animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
-}
-
-.result-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
-}
-
-@keyframes cardPop {
-  from { opacity: 0; transform: scale(0.88); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-.result-card.father   { background: var(--father-grad);   }
-.result-card.mother   { background: var(--mother-grad);   }
-.result-card.son      { background: var(--son-grad);      }
-.result-card.daughter { background: var(--daughter-grad); }
-
-.result-card::after {
-  content: '';
-  position: absolute;
-  bottom: -20px; right: -20px;
-  width: 80px; height: 80px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.rc-icon { font-size: 1.7rem; margin-bottom: 10px; }
-
-.rc-name {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.rc-urdu {
-  font-family: 'Amiri', serif;
-  font-size: 0.85rem;
-  opacity: 0.75;
-  direction: rtl;
-  margin-bottom: 14px;
-}
-
-.rc-share-frac {
-  font-size: 0.75rem;
-  font-weight: 600;
-  opacity: 0.7;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
-}
-
-/* The KMS display */
-.kms-display {
-  background: rgba(0,0,0,0.25);
-  border-radius: 10px;
-  padding: 12px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-
-.kms-cell {
-  text-align: center;
-  min-width: 52px;
-}
-
-.kms-num {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 900;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.kms-lbl {
-  display: block;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  opacity: 0.65;
-  margin-top: 3px;
-}
-
-.kms-sep {
-  font-size: 1.3rem;
-  font-weight: 300;
-  opacity: 0.4;
-  margin: 0 2px;
-  align-self: center;
-  padding-bottom: 6px;
-}
-
-.rc-sqft-note {
-  margin-top: 10px;
-  font-size: 0.72rem;
-  opacity: 0.6;
-  text-align: center;
-  letter-spacing: 0.3px;
-}
-
-/* ─── ERROR ─── */
-.error-box {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid rgba(239,68,68,0.3);
-  border-radius: 12px;
-  padding: 16px 20px;
-  color: #fca5a5;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 4px;
-}
-
-/* ─── VERIFY BAR ─── */
-.verify-bar {
-  margin-top: 16px;
-  padding: 12px 18px;
-  background: rgba(34,197,94,0.08);
-  border: 1px solid rgba(34,197,94,0.2);
-  border-radius: 10px;
-  font-size: 0.8rem;
-  color: #86efac;
-  text-align: center;
-  letter-spacing: 0.3px;
-}
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 520px) {
-  .area-grid { grid-template-columns: 1fr; }
-  .results-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 360px) {
-  .results-grid { grid-template-columns: 1fr; }
-}
+@media(max-width:520px){.area-grid{grid-template-columns:1fr}.results-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:360px){.results-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-  <!-- Header -->
-  <header class="header">
-    <div class="header-badge">Islamic Law · Hanafi · Pakistan</div>
-    <h1>Legal Heirs Calculator</h1>
-    <div class="header-urdu">وراثت کا حساب کتاب</div>
-    <p class="header-sub">Kanal · Marla · Square Feet &nbsp;|&nbsp; 1 Marla = 272.25 Sq.Ft &nbsp;|&nbsp; 1 Kanal = 20 Marla</p>
-  </header>
+<!-- HEADER -->
+<header class="header">
+  <div class="hbadge">Islamic Law · Hanafi · Pakistan</div>
+  <h1>Legal Heirs Calculator</h1>
+  <div class="h-urdu">وراثت کا حساب کتاب</div>
+  <p class="h-sub">Kanal · Marla · Square Feet &nbsp;|&nbsp; 1 Marla = 272.25 Sq.Ft &nbsp;|&nbsp; 1 Kanal = 20 Marla</p>
+  <div class="h-creator">
+    <span class="cr-label">Created by</span>
+    <span class="cr-dot"></span>
+    <span class="cr-name">Amir Hussain</span>
+    <span class="cr-dot"></span>
+    <span class="cr-name" style="font-size:1.15rem;letter-spacing:0">عامر حسین</span>
+  </div>
+</header>
 
-  <!-- Total Area -->
-  <div class="card">
-    <div class="card-title">📐 Total Area &nbsp;|&nbsp; کل رقبہ</div>
-    <div class="area-grid">
-      <div class="inp-wrap">
-        <label>Kanal · کنال</label>
-        <input type="number" id="inp-kanal" min="0" value="0" placeholder="0">
-        <span class="inp-unit">1 Kanal = 20 Marla</span>
-      </div>
-      <div class="inp-wrap">
-        <label>Marla · مرلہ</label>
-        <input type="number" id="inp-marla" min="0" value="0" placeholder="0">
-        <span class="inp-unit">1 Marla = 272.25 Sq.Ft</span>
-      </div>
-      <div class="inp-wrap">
-        <label>Sq.Ft · مربع فٹ</label>
-        <input type="number" id="inp-sqft" min="0" step="0.01" value="0" placeholder="0.00">
-        <span class="inp-unit">Decimal allowed</span>
-      </div>
+<!-- TOTAL AREA -->
+<div class="card">
+  <div class="card-title">📐 Total Area · کل رقبہ</div>
+  <div class="area-grid">
+    <div class="inp-wrap">
+      <label>Kanal · کنال</label>
+      <input type="number" id="inp-kanal" min="0" value="0" placeholder="0">
+      <span class="inp-unit">1 Kanal = 20 Marla</span>
+    </div>
+    <div class="inp-wrap">
+      <label>Marla · مرلہ</label>
+      <input type="number" id="inp-marla" min="0" value="0" placeholder="0">
+      <span class="inp-unit">1 Marla = 272.25 Sq.Ft</span>
+    </div>
+    <div class="inp-wrap">
+      <label>Sq.Ft · مربع فٹ</label>
+      <input type="number" id="inp-sqft" min="0" step="0.01" value="0" placeholder="0.00">
+      <span class="inp-unit">Decimal allowed</span>
     </div>
   </div>
+</div>
 
-  <!-- Heirs -->
-  <div class="card">
-    <div class="card-title">👨‍👩‍👧‍👦 Legal Heirs &nbsp;|&nbsp; قانونی ورثاء</div>
+<!-- PARENTS & GRANDPARENTS -->
+<div class="card">
+  <div class="card-title">👨‍👩 Parents & Grandparents · والدین / دادا دادی</div>
 
-    <!-- Father -->
-    <div class="heir-row">
-      <div class="heir-info">
-        <div class="heir-avatar father">👨</div>
-        <div>
-          <div class="heir-text-name">Father · والد</div>
-          <div class="heir-text-sub">شامل کریں؟</div>
-        </div>
-      </div>
-      <label class="toggle-wrap">
-        <input type="checkbox" id="chk-father" checked>
-        <span class="toggle-track"></span>
-      </label>
+  <div class="sec-label">Parents · والدین</div>
+
+  <div class="heir-row" id="row-father">
+    <div class="h-info">
+      <div class="h-avatar father">👨</div>
+      <div><div class="h-name">Father · والد</div><div class="h-sub">شامل کریں؟</div></div>
     </div>
-
-    <!-- Mother -->
-    <div class="heir-row">
-      <div class="heir-info">
-        <div class="heir-avatar mother">👩</div>
-        <div>
-          <div class="heir-text-name">Mother · والدہ</div>
-          <div class="heir-text-sub">شامل کریں؟</div>
-        </div>
-      </div>
-      <label class="toggle-wrap">
-        <input type="checkbox" id="chk-mother" checked>
-        <span class="toggle-track"></span>
-      </label>
-    </div>
-
-    <!-- Sons -->
-    <div class="heir-row">
-      <div class="heir-info">
-        <div class="heir-avatar son">👦</div>
-        <div>
-          <div class="heir-text-name">Sons · بیٹے</div>
-          <div class="heir-text-sub">تعداد درج کریں</div>
-        </div>
-      </div>
-      <div class="counter">
-        <button class="cnt-btn minus" onclick="adj('sons',-1)">−</button>
-        <span class="cnt-val" id="val-sons">0</span>
-        <button class="cnt-btn plus"  onclick="adj('sons',+1)">+</button>
-      </div>
-    </div>
-
-    <!-- Daughters -->
-    <div class="heir-row">
-      <div class="heir-info">
-        <div class="heir-avatar daughter">👧</div>
-        <div>
-          <div class="heir-text-name">Daughters · بیٹیاں</div>
-          <div class="heir-text-sub">تعداد درج کریں</div>
-        </div>
-      </div>
-      <div class="counter">
-        <button class="cnt-btn minus" onclick="adj('daughters',-1)">−</button>
-        <span class="cnt-val" id="val-daughters">0</span>
-        <button class="cnt-btn plus"  onclick="adj('daughters',+1)">+</button>
-      </div>
-    </div>
+    <label class="toggle-wrap"><input type="checkbox" id="chk-father" checked onchange="syncGP()"><span class="ttrack"></span></label>
   </div>
 
-  <!-- Button -->
-  <button class="calc-btn" onclick="calculate()">⚖ Calculate Shares · حصے نکالیں</button>
+  <div class="heir-row" id="row-mother">
+    <div class="h-info">
+      <div class="h-avatar mother">👩</div>
+      <div><div class="h-name">Mother · والدہ</div><div class="h-sub">شامل کریں؟</div></div>
+    </div>
+    <label class="toggle-wrap"><input type="checkbox" id="chk-mother" checked onchange="syncGP()"><span class="ttrack"></span></label>
+  </div>
 
-  <!-- Results -->
-  <div id="results"></div>
+  <div class="sec-label" style="margin-top:6px">Grand Parents · دادا دادی <span style="color:var(--gold);font-size:.6rem">(والدین کی غیر موجودگی میں)</span></div>
+
+  <div class="heir-row" id="row-gf">
+    <div class="h-info">
+      <div class="h-avatar grandfather">👴</div>
+      <div><div class="h-name">Grandfather · دادا</div><div class="h-sub">شامل کریں؟</div><div class="h-note" id="note-gf">⚠ والد موجود ہیں</div></div>
+    </div>
+    <label class="toggle-wrap"><input type="checkbox" id="chk-gf" onchange="syncGP()"><span class="ttrack"></span></label>
+  </div>
+
+  <div class="heir-row" id="row-gm">
+    <div class="h-info">
+      <div class="h-avatar grandmother">👵</div>
+      <div><div class="h-name">Grandmother · دادی</div><div class="h-sub">شامل کریں؟</div><div class="h-note" id="note-gm">⚠ والدہ موجود ہیں</div></div>
+    </div>
+    <label class="toggle-wrap"><input type="checkbox" id="chk-gm" onchange="syncGP()"><span class="ttrack"></span></label>
+  </div>
+</div>
+
+<!-- WIVES & CHILDREN -->
+<div class="card">
+  <div class="card-title">👨‍👩‍👧‍👦 Wives & Children · بیویاں اور اولاد</div>
+  <div class="heir-row" style="padding-top:0">
+    <div class="h-info">
+      <div class="h-avatar" style="background:rgba(232,98,42,.2);border:1px solid rgba(232,98,42,.4);font-size:1.1rem">💍</div>
+      <div><div class="h-name">Wives · بیویاں</div><div class="h-sub">تعداد منتخب کریں (زیادہ سے زیادہ 4)</div></div>
+    </div>
+    <div class="counter">
+      <button class="cbtn minus" onclick="adjWives(-1)">−</button>
+      <span class="cval" id="val-wives">1</span>
+      <button class="cbtn plus"  onclick="adjWives(+1)">+</button>
+    </div>
+  </div>
+  <div class="wives-container" id="wives-container"></div>
+</div>
+
+<!-- CALCULATE -->
+<button class="calc-btn" onclick="calculate()">⚖ Calculate Shares · حصے نکالیں</button>
+
+<!-- RESULTS -->
+<div id="results"></div>
 
 </div>
 
 <script>
-/* ───────────────────────────────────────────────
-   CONSTANTS
-─────────────────────────────────────────────── */
-const SQFT_PER_MARLA  = 272.25;
-const MARLA_PER_KANAL = 20;
-const SQFT_PER_KANAL  = SQFT_PER_MARLA * MARLA_PER_KANAL; // 5445
+/* ═══ CONSTANTS ═══ */
+const SQFT_M=272.25, MARLA_K=20, SQFT_K=SQFT_M*MARLA_K;
 
-/* ───────────────────────────────────────────────
-   STATE
-─────────────────────────────────────────────── */
-const counts = { sons: 0, daughters: 0 };
+/* ═══ STATE ═══ */
+const S={
+  nWives:1,
+  wives:Array.from({length:4},()=>({
+    deceased:false,
+    daughters:[],  // each: {deceased:false, hisSons:0, hisDaughters:0}
+    sons:[]        // each: {deceased:false, hisSons:0, hisDaughters:0}
+  }))
+};
 
-function adj(type, delta) {
-  counts[type] = Math.max(0, counts[type] + delta);
-  document.getElementById('val-' + type).textContent = counts[type];
+const WIFE_LABELS=[
+  {en:'Wife 1',ur:'بیوی اول',  cls:'w1',emoji:'👩'},
+  {en:'Wife 2',ur:'بیوی دوم', cls:'w2',emoji:'👩'},
+  {en:'Wife 3',ur:'بیوی سوم', cls:'w3',emoji:'👩'},
+  {en:'Wife 4',ur:'بیوی چہارم',cls:'w4',emoji:'👩'}
+];
+
+/* ═══ WIVES COUNT ═══ */
+function adjWives(d){
+  S.nWives=Math.max(1,Math.min(4,S.nWives+d));
+  document.getElementById('val-wives').textContent=S.nWives;
+  renderWives();
 }
 
-/* ───────────────────────────────────────────────
-   UNIT CONVERSIONS
-─────────────────────────────────────────────── */
-function toSqft(k, m, s) {
-  return k * SQFT_PER_KANAL + m * SQFT_PER_MARLA + s;
-}
+/* ═══ MANIPULATORS ═══ */
+function toggleWifeDead(wi){S.wives[wi].deceased=!S.wives[wi].deceased;renderWives();}
 
-function fromSqft(total) {
-  const kanal = Math.floor(total / SQFT_PER_KANAL);
-  let rem     = total - kanal * SQFT_PER_KANAL;
-  const marla = Math.floor(rem / SQFT_PER_MARLA);
-  rem         = rem - marla * SQFT_PER_MARLA;
-  return { kanal, marla, sqft: rem };
-}
+function addSon(wi){S.wives[wi].sons.push({deceased:false,hisSons:0,hisDaughters:0});renderWives();}
+function removeSon(wi){if(S.wives[wi].sons.length>0)S.wives[wi].sons.pop();renderWives();}
+function toggleSonDead(wi,si){S.wives[wi].sons[si].deceased=!S.wives[wi].sons[si].deceased;renderWives();}
+function adjHisSons(wi,si,d){S.wives[wi].sons[si].hisSons=Math.max(0,S.wives[wi].sons[si].hisSons+d);renderWives();}
+function adjHisSonDau(wi,si,d){S.wives[wi].sons[si].hisDaughters=Math.max(0,S.wives[wi].sons[si].hisDaughters+d);renderWives();}
 
-/* ───────────────────────────────────────────────
-   ISLAMIC INHERITANCE (HANAFI)
-   
-   Heirs considered: Father, Mother, Sons, Daughters
-   
-   Rules applied:
-   ─ If sons present:
-       Father (if alive): 1/6
-       Mother (if alive): 1/6
-       Residue → sons + daughters in 2:1 ratio
-   ─ If daughters only (no sons):
-       Mother (if alive): 1/6
-       Daughters: 1/2 (one) or 2/3 (two+)
-       Father (if alive): everything remaining (acts as asaba)
-   ─ No children:
-       Mother (if alive): 1/3
-       Father (if alive): rest
-─────────────────────────────────────────────── */
-function computeFractions(hasFather, hasMother, nSons, nDaughters) {
-  const hasChildren  = nSons > 0 || nDaughters > 0;
-  const hasSons      = nSons > 0;
-  const hasDaughters = nDaughters > 0;
+function addDau(wi){S.wives[wi].daughters.push({deceased:false,hisSons:0,hisDaughters:0});renderWives();}
+function removeDau(wi){if(S.wives[wi].daughters.length>0)S.wives[wi].daughters.pop();renderWives();}
+function toggleDauDead(wi,di){S.wives[wi].daughters[di].deceased=!S.wives[wi].daughters[di].deceased;renderWives();}
+function adjHerSons(wi,di,d){S.wives[wi].daughters[di].hisSons=Math.max(0,S.wives[wi].daughters[di].hisSons+d);renderWives();}
+function adjHerDau(wi,di,d){S.wives[wi].daughters[di].hisDaughters=Math.max(0,S.wives[wi].daughters[di].hisDaughters+d);renderWives();}
 
-  const heirs = []; // { id, nameEn, nameUr, type, frac }
+/* ═══ RENDER WIVES ═══ */
+function renderWives(){
+  const container=document.getElementById('wives-container');
+  let html='';
+  for(let wi=0;wi<S.nWives;wi++){
+    const w=S.wives[wi], wl=WIFE_LABELS[wi];
+    const nSons=w.sons.length, nDau=w.daughters.length;
+    const deadClass=w.deceased?'wife-dead':'';
+    html+=`<div class="wife-block ${wl.cls} ${deadClass}">`;
 
-  if (!hasChildren) {
-    /* ── No children ── */
-    const mFrac = hasMother ? 1/3 : 0;
-    const fFrac = hasFather ? 1 - mFrac : 0;
-    if (hasFather) heirs.push({ id:'father',   nameEn:'Father',   nameUr:'والد',   type:'father',   frac: fFrac });
-    if (hasMother) heirs.push({ id:'mother',   nameEn:'Mother',   nameUr:'والدہ',  type:'mother',   frac: mFrac });
+    /* Wife header + deceased toggle */
+    const deadBadge=w.deceased?`<span class="wife-deceased-badge">💀 Deceased · فوت شدہ</span>`:'';
+    html+=`<div class="wife-header">
+      <div class="wife-icon">${w.deceased?'🪦':wl.emoji}</div>
+      <div style="flex:1"><div class="wife-title">${wl.en}${deadBadge}</div><div class="wife-title-urdu" style="direction:rtl">${wl.ur}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+        <span style="font-size:.62rem;color:${w.deceased?'#ef9a9a':'var(--text-dim)'};letter-spacing:1px;text-transform:uppercase">${w.deceased?'DECEASED':'Mark dead'}</span>
+        <label class="dtoggle-wrap"><input type="checkbox" ${w.deceased?'checked':''} onchange="toggleWifeDead(${wi})"><span class="ttrack"></span></label>
+      </div>
+    </div>`;
 
-  } else if (hasSons) {
-    /* ── Sons present ── */
-    const fFixed = hasFather ? 1/6 : 0;
-    const mFixed = hasMother ? 1/6 : 0;
-    const residue = 1 - fFixed - mFixed;
-    const parts   = nSons * 2 + nDaughters;
-
-    if (hasFather) heirs.push({ id:'father', nameEn:'Father', nameUr:'والد', type:'father', frac: fFixed });
-    if (hasMother) heirs.push({ id:'mother', nameEn:'Mother', nameUr:'والدہ', type:'mother', frac: mFixed });
-
-    for (let i = 1; i <= nSons; i++) {
-      heirs.push({ id:`son${i}`, nameEn:`Son ${i}`, nameUr:`بیٹا ${i}`, type:'son', frac: residue * 2 / parts });
+    if(w.deceased){
+      html+=`<div class="wife-deceased-note">⚠ اس بیوی کا حصہ شامل نہیں ہو گا — شوہر سے کوئی حصہ نہیں ملتا اگر بیوی پہلے فوت ہو جائے</div>`;
     }
-    for (let i = 1; i <= nDaughters; i++) {
-      heirs.push({ id:`dau${i}`, nameEn:`Daughter ${i}`, nameUr:`بیٹی ${i}`, type:'daughter', frac: residue * 1 / parts });
+
+    /* Daughters row */
+    html+=`<div class="wife-row">
+      <div class="wife-row-label"><span>👧</span> Daughters · بیٹیاں <span style="font-size:.72rem;opacity:.55;font-weight:400;margin-left:4px">(${nDau} added)</span></div>
+      <div class="counter">
+        <button class="cbtn minus" onclick="removeDau(${wi})">−</button>
+        <span class="cval">${nDau}</span>
+        <button class="cbtn plus"  onclick="addDau(${wi})">+</button>
+      </div>
+    </div>`;
+
+    /* Daughters list */
+    if(nDau>0){
+      html+=`<div class="daughters-list">`;
+      w.daughters.forEach((d,di)=>{
+        const db=d.deceased?`<span class="deceased-badge">💀 Deceased</span>`:'';
+        html+=`<div class="dau-item">
+          <div class="dau-header">
+            <div class="dau-label"><span>👧</span> Daughter ${di+1}${S.nWives>1?` <span style="font-size:.7rem;opacity:.5">(${wl.en})</span>`:''}${db}</div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="font-size:.62rem;color:${d.deceased?'#ef9a9a':'var(--text-dim)'};letter-spacing:1px;text-transform:uppercase">${d.deceased?'DECEASED':'Mark dead'}</span>
+              <label class="dtoggle-wrap"><input type="checkbox" ${d.deceased?'checked':''} onchange="toggleDauDead(${wi},${di})"><span class="ttrack"></span></label>
+            </div>
+          </div>`;
+        if(d.deceased){
+          html+=`<div class="deceased-section">
+            <div class="dec-title">☪ Her Children (MFLO 1961) · اس کی اولاد</div>
+            <div class="dec-row">
+              <div class="dec-row-label"><span>👦</span> Her Sons · اس کے بیٹے</div>
+              <div class="counter">
+                <button class="cbtn minus" onclick="adjHerSons(${wi},${di},-1)">−</button>
+                <span class="cval">${d.hisSons}</span>
+                <button class="cbtn plus"  onclick="adjHerSons(${wi},${di},+1)">+</button>
+              </div>
+            </div>
+            <div class="dec-row">
+              <div class="dec-row-label"><span>👧</span> Her Daughters · اس کی بیٹیاں</div>
+              <div class="counter">
+                <button class="cbtn minus" onclick="adjHerDau(${wi},${di},-1)">−</button>
+                <span class="cval">${d.hisDaughters}</span>
+                <button class="cbtn plus"  onclick="adjHerDau(${wi},${di},+1)">+</button>
+              </div>
+            </div>
+            ${(d.hisSons===0&&d.hisDaughters===0)?`<div style="font-size:.7rem;color:#ef9a9a;margin-top:6px;text-align:center;opacity:.8">⚠ کوئی اولاد نہیں — حصہ باقی ورثاء میں تقسیم ہو گا</div>`:''}
+          </div>`;
+        }
+        html+=`</div>`;
+      });
+      html+=`</div>`;
     }
+
+    /* Sons row */
+    html+=`<div class="wife-row">
+      <div class="wife-row-label"><span>👦</span> Sons · بیٹے <span style="font-size:.72rem;opacity:.55;font-weight:400;margin-left:4px">(${nSons} added)</span></div>
+      <div class="counter">
+        <button class="cbtn minus" onclick="removeSon(${wi})">−</button>
+        <span class="cval">${nSons}</span>
+        <button class="cbtn plus"  onclick="addSon(${wi})">+</button>
+      </div>
+    </div>`;
+
+    /* Sons list */
+    if(nSons>0){
+      html+=`<div class="sons-list">`;
+      w.sons.forEach((s,si)=>{
+        const sb=s.deceased?`<span class="deceased-badge">💀 Deceased</span>`:'';
+        html+=`<div class="son-item">
+          <div class="son-header">
+            <div class="son-label"><span>👦</span> Son ${si+1}${S.nWives>1?` <span style="font-size:.7rem;opacity:.5">(${wl.en})</span>`:''}${sb}</div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="font-size:.62rem;color:${s.deceased?'#ef9a9a':'var(--text-dim)'};letter-spacing:1px;text-transform:uppercase">${s.deceased?'DECEASED':'Mark dead'}</span>
+              <label class="dtoggle-wrap"><input type="checkbox" ${s.deceased?'checked':''} onchange="toggleSonDead(${wi},${si})"><span class="ttrack"></span></label>
+            </div>
+          </div>`;
+        if(s.deceased){
+          html+=`<div class="deceased-section">
+            <div class="dec-title">☪ His Children (MFLO 1961) · اس کی اولاد</div>
+            <div class="dec-row">
+              <div class="dec-row-label"><span>👦</span> His Sons · اس کے بیٹے</div>
+              <div class="counter">
+                <button class="cbtn minus" onclick="adjHisSons(${wi},${si},-1)">−</button>
+                <span class="cval">${s.hisSons}</span>
+                <button class="cbtn plus"  onclick="adjHisSons(${wi},${si},+1)">+</button>
+              </div>
+            </div>
+            <div class="dec-row">
+              <div class="dec-row-label"><span>👧</span> His Daughters · اس کی بیٹیاں</div>
+              <div class="counter">
+                <button class="cbtn minus" onclick="adjHisSonDau(${wi},${si},-1)">−</button>
+                <span class="cval">${s.hisDaughters}</span>
+                <button class="cbtn plus"  onclick="adjHisSonDau(${wi},${si},+1)">+</button>
+              </div>
+            </div>
+            ${(s.hisSons===0&&s.hisDaughters===0)?`<div style="font-size:.7rem;color:#ef9a9a;margin-top:6px;text-align:center;opacity:.8">⚠ کوئی اولاد نہیں — حصہ باقی ورثاء میں تقسیم ہو گا</div>`:''}
+          </div>`;
+        }
+        html+=`</div>`;
+      });
+      html+=`</div>`;
+    }
+
+    html+=`</div>`; // wife-block
+  }
+  container.innerHTML=html;
+}
+
+/* ═══ GRANDPARENT SYNC ═══ */
+function syncGP(){
+  const fOn=document.getElementById('chk-father').checked;
+  const mOn=document.getElementById('chk-mother').checked;
+  const rowGF=document.getElementById('row-gf'),chkGF=document.getElementById('chk-gf'),nGF=document.getElementById('note-gf');
+  const rowGM=document.getElementById('row-gm'),chkGM=document.getElementById('chk-gm'),nGM=document.getElementById('note-gm');
+  if(fOn){rowGF.classList.add('disabled-row');chkGF.checked=false;nGF.style.display='block'}
+  else{rowGF.classList.remove('disabled-row');nGF.style.display='none'}
+  if(mOn){rowGM.classList.add('disabled-row');chkGM.checked=false;nGM.style.display='block'}
+  else{rowGM.classList.remove('disabled-row');nGM.style.display='none'}
+}
+
+/* ═══ UNIT CONVERSIONS ═══ */
+function toSqft(k,m,s){return k*SQFT_K+m*SQFT_M+s}
+function fromSqft(t){const k=Math.floor(t/SQFT_K);let r=t-k*SQFT_K;const m=Math.floor(r/SQFT_M);return{kanal:k,marla:m,sqft:r-m*SQFT_M}}
+
+/* ═══ ISLAMIC INHERITANCE (HANAFI + MFLO 1961) ═══
+  
+  Wife deceased → no share (already gone before husband)
+  Deceased son  → his children inherit his share (MFLO 1961)
+  Deceased daughter:
+    → if has children: her children inherit her share (MFLO 1961)
+    → if no children:  her share distributed back to other heirs
+      (we simply exclude her from the pool; math recalculates naturally)
+*/
+function computeFractions(hasFather,hasMother,hasGF,hasGM){
+  const useGF=hasGF&&!hasFather, useGM=hasGM&&!hasMother;
+  const hasPat=hasFather||useGF, hasMat=hasMother||useGM;
+  const PAT=hasFather?{nameEn:'Father',nameUr:'والد',type:'father'}:{nameEn:'Grandfather',nameUr:'دادا',type:'grandfather'};
+  const MAT=hasMother?{nameEn:'Mother',nameUr:'والدہ',type:'mother'}:{nameEn:'Grandmother',nameUr:'دادی',type:'grandmother'};
+
+  /* Living wives only */
+  const liveWives=[];
+  for(let wi=0;wi<S.nWives;wi++) if(!S.wives[wi].deceased) liveWives.push(wi);
+  const nLW=liveWives.length;
+
+  /* Effective sons (living OR deceased with children) */
+  let effSons=[]; let globalSonN=0;
+  for(let wi=0;wi<S.nWives;wi++){
+    S.wives[wi].sons.forEach((s,si)=>{
+      globalSonN++;
+      const eff=!s.deceased||(s.hisSons>0||s.hisDaughters>0);
+      if(eff) effSons.push({...s,wi,si,sn:globalSonN,wl:S.nWives>1?` (${WIFE_LABELS[wi].en})`:'',deceased:s.deceased});
+    });
+  }
+
+  /* Effective daughters:
+     - living daughters → count normally
+     - deceased with children → count as "seat" for children
+     - deceased without children → skip (share redistributes) */
+  let effDaus=[]; let globalDauN=0;
+  for(let wi=0;wi<S.nWives;wi++){
+    S.wives[wi].daughters.forEach((d,di)=>{
+      globalDauN++;
+      if(!d.deceased){
+        effDaus.push({...d,wi,di,dn:globalDauN,wl:S.nWives>1?` (${WIFE_LABELS[wi].en})`:'',deceased:false});
+      } else if(d.hisSons>0||d.hisDaughters>0){
+        // deceased but has children → keep slot
+        effDaus.push({...d,wi,di,dn:globalDauN,wl:S.nWives>1?` (${WIFE_LABELS[wi].en})`:'',deceased:true});
+      }
+      // deceased + no children → excluded
+    });
+  }
+
+  const nEffSons=effSons.length;
+  const nEffDaus=effDaus.length;
+  const hasChildren=nEffSons>0||nEffDaus>0;
+
+  const wivesShareTotal = nLW>0 ? (hasChildren?1/8:1/4) : 0;
+  const perWifeFrac = nLW>0 ? wivesShareTotal/nLW : 0;
+
+  const heirs=[];
+
+  /* Wives */
+  liveWives.forEach(wi=>{
+    heirs.push({nameEn:S.nWives>1?`Wife ${wi+1}`:'Wife',nameUr:S.nWives>1?WIFE_LABELS[wi].ur:'بیوی',type:`wife${wi+1}`,frac:perWifeFrac,isWife:true});
+  });
+
+  function maternalFrac(){
+    if(!hasMat) return 0;
+    if(useGM) return 1/6;
+    return hasChildren?1/6:1/3;
+  }
+  const mFrac=maternalFrac();
+
+  if(!hasChildren){
+    const fFrac=hasPat?1-wivesShareTotal-mFrac:0;
+    if(hasPat) heirs.push({...PAT,frac:fFrac});
+    if(hasMat) heirs.push({...MAT,frac:mFrac});
+  } else if(nEffSons>0){
+    const fFixed=hasPat?1/6:0;
+    const childRes=1-wivesShareTotal-fFixed-mFrac;
+    const parts=nEffSons*2+nEffDaus;
+    const sonShare=childRes*2/parts;
+    const dauShare=childRes/parts;
+
+    if(hasPat) heirs.push({...PAT,frac:fFixed});
+    if(hasMat) heirs.push({...MAT,frac:mFrac});
+
+    effSons.forEach(s=>{
+      if(!s.deceased){
+        heirs.push({nameEn:`Son ${s.sn}${s.wl}`,nameUr:`بیٹا ${s.sn}`,type:'son',frac:sonShare});
+      } else {
+        const hisParts=s.hisSons*2+s.hisDaughters;
+        for(let k=1;k<=s.hisSons;k++) heirs.push({nameEn:`Grandson ${k}`,nameUr:`پوتا ${k}`,subLabel:`Son ${s.sn}${s.wl} (deceased)`,type:'grandson',frac:sonShare*2/hisParts,fromDecSon:true});
+        for(let k=1;k<=s.hisDaughters;k++) heirs.push({nameEn:`Granddaughter ${k}`,nameUr:`پوتی ${k}`,subLabel:`Son ${s.sn}${s.wl} (deceased)`,type:'granddaughter',frac:sonShare/hisParts,fromDecSon:true});
+      }
+    });
+
+    effDaus.forEach(d=>{
+      if(!d.deceased){
+        heirs.push({nameEn:`Daughter ${d.dn}${d.wl}`,nameUr:`بیٹی ${d.dn}`,type:'daughter',frac:dauShare});
+      } else {
+        const herParts=d.hisSons*2+d.hisDaughters;
+        for(let k=1;k<=d.hisSons;k++) heirs.push({nameEn:`Grandson ${k}`,nameUr:`نواسہ ${k}`,subLabel:`Daughter ${d.dn}${d.wl} (deceased)`,type:'grandsonD',frac:dauShare*2/herParts,fromDecDau:true});
+        for(let k=1;k<=d.hisDaughters;k++) heirs.push({nameEn:`Granddaughter ${k}`,nameUr:`نواسی ${k}`,subLabel:`Daughter ${d.dn}${d.wl} (deceased)`,type:'granddaughterD',frac:dauShare/herParts,fromDecDau:true});
+      }
+    });
 
   } else {
-    /* ── Daughters only (no sons) ── */
-    const dauTotal = nDaughters === 1 ? 1/2 : 2/3;
-    const mFixed   = hasMother ? 1/6 : 0;
-    const fFrac    = 1 - dauTotal - mFixed; // father takes residue (asaba)
+    /* Daughters only */
+    const nLiveDaus=nEffDaus;
+    const dauTotal=nLiveDaus===1?1/2:2/3;
+    const fFrac=hasPat?1-wivesShareTotal-dauTotal-mFrac:0;
+    const dauShare=dauTotal/nLiveDaus;
 
-    if (hasFather) heirs.push({ id:'father', nameEn:'Father', nameUr:'والد', type:'father', frac: fFrac });
-    if (hasMother) heirs.push({ id:'mother', nameEn:'Mother', nameUr:'والدہ', type:'mother', frac: mFixed });
+    if(hasPat) heirs.push({...PAT,frac:fFrac});
+    if(hasMat) heirs.push({...MAT,frac:mFrac});
 
-    for (let i = 1; i <= nDaughters; i++) {
-      heirs.push({ id:`dau${i}`, nameEn:`Daughter ${i}`, nameUr:`بیٹی ${i}`, type:'daughter', frac: dauTotal / nDaughters });
-    }
+    effDaus.forEach(d=>{
+      if(!d.deceased){
+        heirs.push({nameEn:`Daughter ${d.dn}${d.wl}`,nameUr:`بیٹی ${d.dn}`,type:'daughter',frac:dauShare});
+      } else {
+        const herParts=d.hisSons*2+d.hisDaughters;
+        for(let k=1;k<=d.hisSons;k++) heirs.push({nameEn:`Grandson ${k}`,nameUr:`نواسہ ${k}`,subLabel:`Daughter ${d.dn}${d.wl} (deceased)`,type:'grandsonD',frac:dauShare*2/herParts,fromDecDau:true});
+        for(let k=1;k<=d.hisDaughters;k++) heirs.push({nameEn:`Granddaughter ${k}`,nameUr:`نواسی ${k}`,subLabel:`Daughter ${d.dn}${d.wl} (deceased)`,type:'granddaughterD',frac:dauShare/herParts,fromDecDau:true});
+      }
+    });
   }
 
   return heirs;
 }
 
-/* ───────────────────────────────────────────────
-   ROUNDING LOGIC
-   
-   Rule: collect all decimal (point) parts of sqft.
-   Sum them.  Distribute whole sqfts as extras (one
-   per heir, starting from highest decimal holder).
-   The leftover decimal goes to exactly ONE heir.
-   Result: at most one heir has a .something sqft.
-─────────────────────────────────────────────── */
-function applyRounding(heirs, totalSqft) {
-  /* Step 1: precise KMS for each heir */
-  const arr = heirs.map((h, idx) => {
-    const precise = h.frac * totalSqft;
-    const kms     = fromSqft(precise);
-    return {
-      ...h,
-      precise,
-      kanal:   kms.kanal,
-      marla:   kms.marla,
-      sqftInt: Math.floor(kms.sqft),
-      dec:     kms.sqft - Math.floor(kms.sqft),
-      origIdx: idx
-    };
+/* ═══ ROUNDING ═══ */
+function applyRounding(heirs,totalSqft){
+  const arr=heirs.map((h,idx)=>{
+    const precise=h.frac*totalSqft, kms=fromSqft(precise);
+    return{...h,precise,kanal:kms.kanal,marla:kms.marla,sqftInt:Math.floor(kms.sqft),dec:kms.sqft-Math.floor(kms.sqft),origIdx:idx};
   });
-
-  /* Step 2: sum decimals */
-  const sumDec     = arr.reduce((s, h) => s + h.dec, 0);
-  const wholeExtra = Math.floor(sumDec + 1e-9);          // full sqft to redistribute
-  const leftoverDec = sumDec - wholeExtra;               // remaining decimal (<1)
-
-  /* Step 3: sort by decimal desc, give +1 sqft to top `wholeExtra` heirs */
-  const sorted = arr.slice().sort((a, b) => b.dec - a.dec);
-  for (let i = 0; i < wholeExtra && i < sorted.length; i++) {
-    sorted[i].sqftInt += 1;
-  }
-
-  /* Step 4: leftover decimal → one heir (the next in sorted order) */
-  const decRecipient = Math.min(wholeExtra, sorted.length - 1);
-  sorted[decRecipient].sqftFinal = sorted[decRecipient].sqftInt + (leftoverDec > 0.0005 ? leftoverDec : 0);
-
-  /* Step 5: for all others, sqftFinal = sqftInt */
-  sorted.forEach((h, i) => {
-    if (i !== decRecipient || !h.sqftFinal) h.sqftFinal = h.sqftInt;
+  const sumDec=arr.reduce((s,h)=>s+h.dec,0);
+  const whole=Math.floor(sumDec+1e-9), leftDec=sumDec-whole;
+  const sorted=arr.slice().sort((a,b)=>b.dec-a.dec);
+  for(let i=0;i<whole&&i<sorted.length;i++) sorted[i].sqftInt+=1;
+  const di=Math.min(whole,sorted.length-1);
+  sorted[di].sqftFinal=sorted[di].sqftInt+(leftDec>0.0005?leftDec:0);
+  sorted.forEach(h=>{if(!h.sqftFinal)h.sqftFinal=h.sqftInt;});
+  sorted.forEach(h=>{
+    let s=h.sqftFinal,m=h.marla,k=h.kanal;
+    if(s>=SQFT_M){const e=Math.floor(s/SQFT_M);s-=e*SQFT_M;m+=e}
+    if(m>=MARLA_K){const e=Math.floor(m/MARLA_K);m=m%MARLA_K;k+=e}
+    h.rKanal=k;h.rMarla=m;h.rSqft=Math.round(s*1000)/1000;
   });
-
-  /* Step 6: carry (sqftFinal may push past 272.25 after +1) */
-  sorted.forEach(h => {
-    let s = h.sqftFinal;
-    let m = h.marla;
-    let k = h.kanal;
-
-    if (s >= SQFT_PER_MARLA) {
-      const extra = Math.floor(s / SQFT_PER_MARLA);
-      s -= extra * SQFT_PER_MARLA;
-      m += extra;
-    }
-    if (m >= MARLA_PER_KANAL) {
-      const extra = Math.floor(m / MARLA_PER_KANAL);
-      m  = m % MARLA_PER_KANAL;
-      k += extra;
-    }
-
-    h.rKanal = k;
-    h.rMarla = m;
-    h.rSqft  = Math.round(s * 1000) / 1000;
-  });
-
-  /* Restore original order */
-  sorted.sort((a, b) => a.origIdx - b.origIdx);
+  sorted.sort((a,b)=>a.origIdx-b.origIdx);
   return sorted;
 }
 
-/* ───────────────────────────────────────────────
-   FRACTION DISPLAY  (e.g. 0.1667 → "1/6")
-─────────────────────────────────────────────── */
-function fracText(f) {
-  const pct = (f * 100).toFixed(2) + '%';
-  const tests = [
-    [1,6],[5,6],[1,3],[2,3],[1,2],[1,4],[3,4],[1,9],[2,9],[4,9],[5,9],[7,9],[8,9],
-    [1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[1,8],[3,8],[5,8],[7,8]
-  ];
-  for (const [n, d] of tests) {
-    if (Math.abs(f - n/d) < 0.0005) return `${n}/${d} · ${pct}`;
-  }
+/* ═══ FRACTION TEXT ═══ */
+function fracText(f){
+  const pct=(f*100).toFixed(2)+'%';
+  const t=[[1,6],[5,6],[1,3],[2,3],[1,2],[1,4],[3,4],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[1,8],[3,8],[5,8],[7,8],[1,9],[2,9],[4,9],[5,9],[7,9],[8,9],[1,12],[5,12],[7,12],[11,12],[1,16],[3,16],[5,16],[7,16]];
+  for(const[n,d]of t) if(Math.abs(f-n/d)<0.0006) return `${n}/${d} · ${pct}`;
   return pct;
 }
 
-/* ───────────────────────────────────────────────
-   CARD ICONS
-─────────────────────────────────────────────── */
-const ICONS = { father:'👨', mother:'👩', son:'👦', daughter:'👧' };
+const ICONS={father:'👨',grandfather:'👴',mother:'👩',grandmother:'👵',son:'👦',daughter:'👧',wife:'👩',wife1:'👩',wife2:'👩',wife3:'👩',wife4:'👩',grandson:'👦',granddaughter:'👧',grandsonD:'👦',granddaughterD:'👧'};
 
-/* ───────────────────────────────────────────────
-   MAIN CALCULATE
-─────────────────────────────────────────────── */
-function calculate() {
-  const kanal      = parseFloat(document.getElementById('inp-kanal').value) || 0;
-  const marla      = parseFloat(document.getElementById('inp-marla').value) || 0;
-  const sqft       = parseFloat(document.getElementById('inp-sqft').value)  || 0;
-  const hasFather  = document.getElementById('chk-father').checked;
-  const hasMother  = document.getElementById('chk-mother').checked;
-  const nSons      = counts.sons;
-  const nDaughters = counts.daughters;
-
-  const totalSqft = toSqft(kanal, marla, sqft);
-  const resEl = document.getElementById('results');
-
-  /* Validation */
-  if (totalSqft <= 0) {
-    resEl.innerHTML = '<div class="error-box">⚠️ Please enter the total area first.</div>';
-    return;
-  }
-  if (!hasFather && !hasMother && nSons === 0 && nDaughters === 0) {
-    resEl.innerHTML = '<div class="error-box">⚠️ Please add at least one legal heir.</div>';
-    return;
-  }
-
-  /* Compute */
-  const rawHeirs  = computeFractions(hasFather, hasMother, nSons, nDaughters);
-  const rounded   = applyRounding(rawHeirs, totalSqft);
-
-  /* Format total */
-  const totalKMS = fromSqft(totalSqft);
-  const fmtNum = n => (n % 1 === 0 ? n.toString() : n.toFixed(3).replace(/\.?0+$/, ''));
-
-  /* Build HTML */
-  let html = `
-    <div class="card">
-      <div class="card-title">📊 Results · نتائج</div>
-      <div class="total-band">
-        <span class="total-label">Total Area</span>
-        <span class="total-value">${totalKMS.kanal} &ndash; ${totalKMS.marla} &ndash; ${fmtNum(totalKMS.sqft)}</span>
-        <span style="font-size:0.78rem;color:var(--text-dim)">${totalSqft.toFixed(2)} Sq.Ft</span>
-      </div>
-      <div class="results-grid">
-  `;
-
-  rounded.forEach((h, i) => {
-    const sqftStr = fmtNum(h.rSqft);
-    const icon    = ICONS[h.type] || '👤';
-    const delay   = i * 60;
-
-    html += `
-      <div class="result-card ${h.type}" style="animation-delay:${delay}ms">
-        <div class="rc-icon">${icon}</div>
-        <div class="rc-name">${h.nameEn}</div>
-        <div class="rc-urdu">${h.nameUr}</div>
-        <div class="rc-share-frac">Share: ${fracText(h.frac)}</div>
-        <div class="kms-display">
-          <div class="kms-cell">
-            <span class="kms-num">${h.rKanal}</span>
-            <span class="kms-lbl">Kanal</span>
-          </div>
-          <div class="kms-sep">‒</div>
-          <div class="kms-cell">
-            <span class="kms-num">${h.rMarla}</span>
-            <span class="kms-lbl">Marla</span>
-          </div>
-          <div class="kms-sep">‒</div>
-          <div class="kms-cell">
-            <span class="kms-num">${sqftStr}</span>
-            <span class="kms-lbl">Sq.Ft</span>
-          </div>
-        </div>
-        <div class="rc-sqft-note">Precise: ${h.precise.toFixed(4)} Sq.Ft</div>
-      </div>
-    `;
-  });
-
-  html += '</div>';
-
-  /* Verification */
-  const backTotal = rounded.reduce((s, h) => s + toSqft(h.rKanal, h.rMarla, h.rSqft), 0);
-  const diff = Math.abs(backTotal - totalSqft);
-  html += `
-    <div class="verify-bar">
-      ✅ Verified total: ${backTotal.toFixed(3)} Sq.Ft &nbsp;|&nbsp; Difference: ${diff.toFixed(4)} Sq.Ft
+/* ═══ BUILD RESULT CARD ═══ */
+function buildCard(h,i){
+  const sq=h.rSqft%1===0?String(h.rSqft):h.rSqft.toFixed(3).replace(/\.?0+$/,'');
+  return`<div class="result-card ${h.type}" style="animation-delay:${i*65}ms">
+    <div class="rc-icon">${ICONS[h.type]||'👤'}</div>
+    <div class="rc-name">${h.nameEn}</div>
+    <div class="rc-urdu">${h.nameUr}</div>
+    ${h.subLabel?`<div class="rc-sub">${h.subLabel}</div>`:''}
+    <div class="rc-frac">Share: ${fracText(h.frac)}</div>
+    <div class="kms-display">
+      <div class="kms-cell"><span class="kms-num">${h.rKanal}</span><span class="kms-lbl">Kanal</span></div>
+      <div class="kms-sep">‒</div>
+      <div class="kms-cell"><span class="kms-num">${h.rMarla}</span><span class="kms-lbl">Marla</span></div>
+      <div class="kms-sep">‒</div>
+      <div class="kms-cell"><span class="kms-num">${sq}</span><span class="kms-lbl">Sq.Ft</span></div>
     </div>
-  `;
-
-  html += '</div>';
-  resEl.innerHTML = html;
-  resEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    <div class="rc-precise">Precise: ${h.precise.toFixed(4)} Sq.Ft</div>
+  </div>`;
 }
 
-/* Allow Enter key on inputs */
-document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+/* ═══ CALCULATE ═══ */
+function calculate(){
+  const kanal=parseFloat(document.getElementById('inp-kanal').value)||0;
+  const marla=parseFloat(document.getElementById('inp-marla').value)||0;
+  const sqft =parseFloat(document.getElementById('inp-sqft').value) ||0;
+  const hasFather=document.getElementById('chk-father').checked;
+  const hasMother=document.getElementById('chk-mother').checked;
+  const hasGF=document.getElementById('chk-gf').checked;
+  const hasGM=document.getElementById('chk-gm').checked;
+  const totalSqft=toSqft(kanal,marla,sqft);
+  const resEl=document.getElementById('results');
+
+  if(totalSqft<=0){resEl.innerHTML='<div class="error-box">⚠️ Please enter total area first. | پہلے کل رقبہ درج کریں۔</div>';return;}
+
+  let anyHeir=hasFather||hasMother||hasGF||hasGM;
+  for(let wi=0;wi<S.nWives;wi++){
+    if(!S.wives[wi].deceased) anyHeir=true;
+    S.wives[wi].sons.forEach(s=>{ if(!s.deceased||(s.hisSons>0||s.hisDaughters>0)) anyHeir=true; });
+    S.wives[wi].daughters.forEach(d=>{ if(!d.deceased) anyHeir=true; else if(d.hisSons>0||d.hisDaughters>0) anyHeir=true; });
+  }
+  if(!anyHeir){resEl.innerHTML='<div class="error-box">⚠️ Please add at least one active heir. | کم از کم ایک فعال وارث شامل کریں۔</div>';return;}
+
+  const rawHeirs=computeFractions(hasFather,hasMother,hasGF,hasGM);
+  if(rawHeirs.length===0){resEl.innerHTML='<div class="error-box">⚠️ کوئی حصہ دار نہیں مل سکا۔ دوبارہ چیک کریں۔</div>';return;}
+  const rounded=applyRounding(rawHeirs,totalSqft);
+
+  const totalKMS=fromSqft(totalSqft);
+  const fmt=n=>n%1===0?String(n):n.toFixed(3).replace(/\.?0+$/,'');
+
+  const wives      =rounded.filter(h=>h.isWife);
+  const parents    =rounded.filter(h=>['father','grandfather','mother','grandmother'].includes(h.type));
+  const livingKids =rounded.filter(h=>['son','daughter'].includes(h.type));
+  const decSonKids =rounded.filter(h=>h.fromDecSon);
+  const decDauKids =rounded.filter(h=>h.fromDecDau);
+
+  let idx=0;
+  let html=`<div class="card">
+    <div class="card-title">📊 Results · نتائج</div>
+    <div class="total-band">
+      <span class="t-label">Total Area</span>
+      <span class="t-value">${totalKMS.kanal} &ndash; ${totalKMS.marla} &ndash; ${fmt(totalKMS.sqft)}</span>
+      <span style="font-size:.78rem;color:var(--text-dim)">${totalSqft.toFixed(2)} Sq.Ft</span>
+    </div>
+    <div class="results-grid">`;
+
+  [...wives,...parents,...livingKids].forEach(h=>{html+=buildCard(h,idx++);});
+  html+=`</div>`;
+
+  if(decSonKids.length>0){
+    html+=`<div class="group-title dec-son-color">💀 Deceased Son's Children (MFLO 1961) · فوت شدہ بیٹے کی اولاد</div><div class="results-grid">`;
+    decSonKids.forEach(h=>{html+=buildCard(h,idx++);});
+    html+=`</div>`;
+  }
+
+  if(decDauKids.length>0){
+    html+=`<div class="group-title dec-dau-color">💀 Deceased Daughter's Children (MFLO 1961) · فوت شدہ بیٹی کی اولاد</div><div class="results-grid">`;
+    decDauKids.forEach(h=>{html+=buildCard(h,idx++);});
+    html+=`</div>`;
+  }
+
+  const backTotal=rounded.reduce((s,h)=>s+toSqft(h.rKanal,h.rMarla,h.rSqft),0);
+  html+=`<div class="verify-bar">✅ Verified: ${backTotal.toFixed(3)} Sq.Ft &nbsp;|&nbsp; Rounding diff: ${Math.abs(backTotal-totalSqft).toFixed(4)} Sq.Ft</div></div>`;
+
+  resEl.innerHTML=html;
+  resEl.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ═══ INIT ═══ */
+syncGP();
+renderWives();
+document.addEventListener('keydown',e=>{if(e.key==='Enter')calculate();});
 </script>
 </body>
 </html>
