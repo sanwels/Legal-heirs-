@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "AmirHussain.Sajjad",
+        "sha256_cert_fingerprints": ["42:24:97:05:91:5A:79:A7:44:AD:41:97:60:19:F8:F0:6B:28:E2:70:5B:B3:B3:EF:DA:28:5B:80:8C:7A:50:27"]
+      }
+    }]
